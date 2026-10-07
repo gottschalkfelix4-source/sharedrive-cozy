@@ -96,6 +96,24 @@ docker compose up -d --build
 Die Beispieldatei [`docker-compose.yml`](docker-compose.yml) enthält alle wichtigen
 Schalter als Kommentar. Der Ordner `./data` wird als Volume eingebunden.
 
+### Fertiges Abbild ziehen
+
+Bei jedem Push nach `main` wird das Abbild automatisch getestet, gebaut und
+veröffentlicht. Es braucht keine npm-Abhängigkeiten und keinen Bau-Schritt:
+
+```bash
+docker pull ghcr.io/gottschalkfelix4-source/sharedrive-cozy:latest
+```
+
+Das veröffentlichte Abbild ist **rund 59 MB** groß, läuft als Benutzer `node`
+statt als root und bringt einen Healthcheck mit.
+
+Es wird für `linux/amd64` gebaut — das passt für praktisch jeden Unraid-Server.
+Auf einem ARM-Rechner lässt sich in
+[`.github/workflows/container.yml`](.github/workflows/container.yml) eine Zeile
+`platforms: linux/amd64,linux/arm64` ergänzen (dann zusätzlich
+`docker/setup-qemu-action` einbinden).
+
 ### Ohne Docker
 
 ```bash
