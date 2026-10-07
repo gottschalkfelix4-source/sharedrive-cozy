@@ -1,0 +1,17 @@
+# Hält den Build-Kontext klein. Die Dockerfile kopiert ohnehin nur server/ und
+# public/, aber ohne diese Datei würde Docker trotzdem alles mitschicken.
+.git
+.github
+data
+data-*
+test
+node_modules
+.env
+.env.*
+!.env.example
+*.log
+README.md
+THIRD-PARTY.md
+LICENSE
+docker-compose.yml
+unraid-template.xml

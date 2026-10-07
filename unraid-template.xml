@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>sharedrive</Name>
+  <Repository>ghcr.io/gottschalkfelix4-source/sharedrive:latest</Repository>
+  <Registry>https://github.com/gottschalkfelix4-source/sharedrive/pkgs/container/sharedrive</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/gottschalkfelix4-source/sharedrive/issues</Support>
+  <Project>https://github.com/gottschalkfelix4-source/sharedrive</Project>
+  <Overview>
+    Selbstgehosteter Dateitransfer mit echter Ende-zu-Ende-Verschluesselung.
+    Dateien werden im Browser verschluesselt (AES-256-GCM); der Schluessel steckt
+    nur im Link und erreicht den Server nie. Mit Ablaufdatum, Download-Limit,
+    Passwortschutz, Upload-Portalen (Reverse Share), Download-Tracking,
+    Benachrichtigungen und einem Dashboard mit Statistiken.[br][br]
+    WICHTIG: Fuer den Zugriff ueber eine LAN-IP ist HTTPS noetig, weil Browser die
+    Verschluesselungs-API nur in sicheren Kontexten bereitstellen. Entweder einen
+    Reverse Proxy mit Zertifikat davorsetzen (PUBLIC_URL und TRUST_PROXY=1 setzen)
+    oder TLS_CERT und TLS_KEY auf ein eigenes Zertifikat zeigen lassen.[br][br]
+    Nach dem ersten Start ADMIN_PASSWORD setzen und neu starten.
+  </Overview>
+  <Category>Cloud: Tools: Security:</Category>
+  <WebUI>http://[IP]:[PORT:3000]/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/gottschalkfelix4-source/sharedrive/main/public/favicon.svg</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+
+  <Config Name="Weboberfläche" Target="3000" Default="3000" Mode="tcp"
+    Description="Port der Weboberfläche. Über den Reverse Proxy (z. B. SWAG oder Nginx Proxy Manager) mit HTTPS veröffentlichen." Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+
+  <Config Name="Datenordner" Target="/data" Default="/mnt/user/appdata/sharedrive"
+    Description="Hier liegen die verschluesselten Chunks und die Datenbank. Auf eine SSD oder einen Cache-Pool legen." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sharedrive</Config>
+
+  <Config Name="Admin-Passwort" Target="ADMIN_PASSWORD" Default=""
+    Description="Pflicht. Passwort für /admin. Bewusst ohne Vorbelegung: bleibt das Feld leer, verweigert der Server das Dashboard - statt ein bekanntes Standardpasswort zu erlauben." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+
+  <Config Name="Öffentliche Adresse" Target="PUBLIC_URL" Default=""
+    Description="Vollständige URL der Instanz, z. B. https://share.example.com. Wichtig, damit Links und QR-Codes stimmen." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+
+  <Config Name="Name der Instanz" Target="INSTANCE_NAME" Default="sharedrive"
+    Description="Wird im Dashboard und in Benachrichtigungen angezeigt." Type="Variable" Display="always" Required="false" Mask="false">sharedrive</Config>
+
+  <Config Name="Hinter Reverse Proxy" Target="TRUST_PROXY" Default="1"
+    Description="Auf 1 setzen, wenn ein Reverse Proxy davorsteht. Aktiviert X-Forwarded-For/Proto und sichere Cookies." Type="Variable" Display="always" Required="false" Mask="false">1</Config>
+
+  <Config Name="Maximale Transfergröße" Target="MAX_TRANSFER_BYTES" Default="21474836480"
+    Description="Maximale Größe eines Transfers in Bytes. Standard: 20 GiB." Type="Variable" Display="advanced" Required="false" Mask="false">21474836480</Config>
+
+  <Config Name="Speicher-Quota" Target="STORAGE_QUOTA_BYTES" Default="0"
+    Description="Obergrenze für alle Transfers zusammen in Bytes. 0 = unbegrenzt." Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+
+  <Config Name="Standard-Ablaufzeit (Stunden)" Target="DEFAULT_EXPIRY_HOURS" Default="168"
+    Description="Standard-Ablaufzeit neuer Transfers. 168 = 7 Tage." Type="Variable" Display="advanced" Required="false" Mask="false">168</Config>
+
+  <Config Name="Maximale Ablaufzeit (Stunden)" Target="MAX_EXPIRY_HOURS" Default="720"
+    Description="Obergrenze für die Ablaufzeit. 720 = 30 Tage." Type="Variable" Display="advanced" Required="false" Mask="false">720</Config>
+
+  <Config Name="Aufbewahrung Zugriffslog (Tage)" Target="DOWNLOAD_LOG_RETENTION_DAYS" Default="30"
+    Description="Nach so vielen Tagen werden Zugriffseinträge automatisch gelöscht (DSGVO)." Type="Variable" Display="advanced" Required="false" Mask="false">30</Config>
+
+  <Config Name="Benachrichtigungs-Art" Target="NOTIFY_TYPE" Default=""
+    Description="Leer = aus. Möglich: json, ntfy, discord, smtp." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="Benachrichtigungs-URL" Target="NOTIFY_URL" Default=""
+    Description="Ziel für Benachrichtigungen, z. B. https://ntfy.sh/mein-thema oder eine Discord-Webhook-URL." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="Benachrichtigung an E-Mail" Target="NOTIFY_EMAIL_TO" Default=""
+    Description="Empfänger für Benachrichtigungen, wenn NOTIFY_TYPE=smtp." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="SMTP-Server" Target="SMTP_HOST" Default=""
+    Description="Nur für NOTIFY_TYPE=smtp. Hostname des Mailservers." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="SMTP-Port" Target="SMTP_PORT" Default="587"
+    Description="587 für STARTTLS, 465 für implizites TLS." Type="Variable" Display="advanced" Required="false" Mask="false">587</Config>
+
+  <Config Name="SMTP-Benutzer" Target="SMTP_USER" Default=""
+    Description="Benutzername für die Anmeldung am Mailserver." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="SMTP-Passwort" Target="SMTP_PASS" Default=""
+    Description="Passwort für die Anmeldung am Mailserver." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+
+  <Config Name="SMTP-Absender" Target="SMTP_FROM" Default=""
+    Description="Absenderadresse der Benachrichtigungen." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="Farbschema" Target="BRAND_THEME" Default="sunset"
+    Description="sunset, mint, lavender oder ocean. Kann später im Dashboard geändert werden." Type="Variable" Display="advanced" Required="false" Mask="false">sunset</Config>
+
+  <Config Name="TLS-Zertifikat" Target="TLS_CERT" Default=""
+    Description="Optional: Pfad im Container zu einem Zertifikat, um HTTPS direkt zu bedienen (z. B. /certs/fullchain.pem)." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="TLS-Schlüssel" Target="TLS_KEY" Default=""
+    Description="Optional: Pfad im Container zum privaten Schlüssel des Zertifikats." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+</Container>

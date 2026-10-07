@@ -1,0 +1,25 @@
+{
+  "name": "sharedrive",
+  "short_name": "sharedrive",
+  "description": "Verschlüsselte Dateien teilen – der Schlüssel bleibt in deinem Browser.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff6ee",
+  "theme_color": "#f97362",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

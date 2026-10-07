@@ -1,0 +1,52 @@
+services:
+  sharedrive:
+    build: .
+    image: sharedrive:latest
+    container_name: sharedrive
+    restart: unless-stopped
+    ports:
+      # Nur im eigenen Netz erreichbar. Fuer Zugriff von aussen entweder einen
+      # Reverse Proxy davorsetzen oder TLS_CERT/TLS_KEY unten aktivieren.
+      - "3000:3000"
+    environment:
+      # Pflicht: Passwort fuer /admin
+      ADMIN_PASSWORD: "bitte-aendern"
+      INSTANCE_NAME: "sharedrive"
+
+      # Oeffentliche Adresse, damit Links und QR-Codes stimmen
+      # PUBLIC_URL: "https://share.example.com"
+
+      # Hinter Reverse Proxy (SWAG, Nginx Proxy Manager, Cloudflare Tunnel):
+      # TRUST_PROXY: "1"
+
+      # Limits
+      MAX_TRANSFER_BYTES: "21474836480" # 20 GiB
+      STORAGE_QUOTA_BYTES: "0" # 0 = unbegrenzt
+      DEFAULT_EXPIRY_HOURS: "168" # 7 Tage
+      MAX_EXPIRY_HOURS: "720" # 30 Tage
+      DOWNLOAD_LOG_RETENTION_DAYS: "30"
+
+      # Benachrichtigungen (leer = aus). NOTIFY_TYPE: json | ntfy | discord | smtp
+      # NOTIFY_TYPE: "ntfy"
+      # NOTIFY_URL: "https://ntfy.sh/mein-thema"
+      # NOTIFY_TYPE: "smtp"
+      # NOTIFY_EMAIL_TO: "ich@example.com"
+      # SMTP_HOST: "smtp.example.com"
+      # SMTP_PORT: "587"
+      # SMTP_USER: "benutzer"
+      # SMTP_PASS: "passwort"
+      # SMTP_FROM: "sharedrive@example.com"
+      # SMTP_SECURE: "starttls"
+
+      # Branding
+      BRAND_NAME: "sharedrive"
+      BRAND_TAGLINE: "Dateien teilen, die nur ihr sehen koennt."
+      BRAND_THEME: "sunset"
+
+      # Optional HTTPS direkt im Container (sonst weglassen)
+      # TLS_CERT: "/certs/fullchain.pem"
+      # TLS_KEY: "/certs/privkey.pem"
+
+    volumes:
+      - ./data:/data
+      # - ./certs:/certs:ro

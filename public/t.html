@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="de" data-theme="sunset">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Dateien für dich – sharedrive</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/sr-theme-boot.js"></script>
+  </head>
+  <body>
+    <div class="bg-blobs" aria-hidden="true">
+      <span class="blob blob--1"></span>
+      <span class="blob blob--2"></span>
+      <span class="blob blob--3"></span>
+    </div>
+
+    <header data-shell="header"></header>
+
+    <main class="shell shell--narrow">
+      <!-- Laden -->
+      <section id="view-loading" class="card card--pad center stack">
+        <span class="dropzone__icon u-center-self">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+            <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
+          </svg>
+        </span>
+        <h2>Transfer wird geladen …</h2>
+        <p class="muted">Einen Moment.</p>
+      </section>
+
+      <!-- Passwort -->
+      <section id="view-password" class="card card--pad stack hidden">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="10" width="16" height="11" rx="2.5" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </span>
+          <h2>Dieser Transfer ist geschützt</h2>
+          <p class="muted">Bitte gib das Passwort ein, das du separat bekommen hast.</p>
+        </div>
+        <div class="field--with-action">
+          <input class="input" type="password" id="pw-input" autocomplete="current-password" placeholder="Passwort" />
+          <button type="button" class="btn btn--primary" id="pw-submit">Öffnen</button>
+        </div>
+        <p class="tiny muted center" id="pw-hint">Das Passwort wird nur lokal zum Entschlüsseln benutzt.</p>
+      </section>
+
+      <!-- Bereit -->
+      <section id="view-ready" class="stack hidden">
+        <div class="card card--pad stack">
+          <div class="row row--between row--wrap">
+            <span class="state-badge state-badge--ok">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 13l4.5 4.5L19 7" /></svg>
+              Entschlüsselt in deinem Browser
+            </span>
+            <span class="state-badge" id="expiry-badge"></span>
+          </div>
+
+          <div id="sender-message" class="hidden">
+            <div class="field__label">Nachricht</div>
+            <p id="message-text" class="notice notice--info u-pre-wrap"></p>
+          </div>
+
+          <div>
+            <div class="row row--between u-mb-2">
+              <strong id="file-summary"></strong>
+              <span class="tiny muted" id="download-status"></span>
+            </div>
+            <div class="filelist" id="filelist"></div>
+          </div>
+
+          <div id="preview-area" class="hidden">
+            <div class="field__label">Vorschau</div>
+            <div class="preview-grid" id="preview-grid"></div>
+          </div>
+
+          <div class="row row--wrap u-gap-2">
+            <button type="button" class="btn btn--primary btn--lg" id="btn-download-all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 4v12" /><path d="M7 11l5 5 5-5" /><path d="M5 20h14" />
+              </svg>
+              Alle herunterladen
+            </button>
+            <button type="button" class="btn btn--quiet hidden" id="btn-folder">
+              In Ordner speichern …
+            </button>
+          </div>
+
+          <div id="download-progress" class="stack stack--sm hidden">
+            <div class="progress"><span class="progress__fill" id="dl-bar"></span></div>
+            <p class="tiny muted" id="dl-label"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nicht verfügbar -->
+      <section id="view-blocked" class="card card--pad stack hidden">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self u-icon-muted">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" /><path d="M12 7.5v5M12 16.2v.3" />
+            </svg>
+          </span>
+          <h2 id="blocked-title">Nicht mehr verfügbar</h2>
+          <p class="muted" id="blocked-text"></p>
+        </div>
+        <a class="btn btn--quiet btn--full" href="/">Eigene Dateien senden</a>
+      </section>
+    </main>
+
+    <footer data-shell="footer"></footer>
+    <script type="module" src="/js/app-receive.js"></script>
+  </body>
+</html>

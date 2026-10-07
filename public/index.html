@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="de" data-theme="sunset">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>sharedrive – verschlüsselt Dateien teilen</title>
+    <meta name="description" content="Selbstgehosteter Dateitransfer mit Ende-zu-Ende-Verschlüsselung: Der Schlüssel verlässt deinen Browser nie." />
+    <meta name="theme-color" content="#f97362" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/sr-theme-boot.js"></script>
+    <script src="/vendor/qrcode.js"></script>
+    <script src="/vendor/qrcode-utf8.js"></script>
+  </head>
+  <body>
+    <div class="bg-blobs" aria-hidden="true">
+      <span class="blob blob--1"></span>
+      <span class="blob blob--2"></span>
+      <span class="blob blob--3"></span>
+    </div>
+
+    <header data-shell="header"></header>
+
+    <main class="shell shell--narrow">
+      <section class="hero">
+        <h1>Teilen, <span class="accent">ohne dass jemand mitliest</span></h1>
+        <p class="hero__lead">
+          Dateien werden in deinem Browser verschlüsselt, bevor sie den Server erreichen.
+          Den Schlüssel bekommt nur, wer den Link hat.
+        </p>
+      </section>
+
+      <!-- ================= Ansicht: Zusammenstellen ================= -->
+      <section id="view-compose" class="stack">
+        <div class="card card--pad stack">
+          <div
+            class="dropzone"
+            id="dropzone"
+            role="button"
+            tabindex="0"
+            aria-label="Dateien auswählen oder hierher ziehen"
+          >
+            <span class="dropzone__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 16V4" />
+                <path d="M7 9l5-5 5 5" />
+                <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+              </svg>
+            </span>
+            <span class="dropzone__title">Dateien hierher ziehen</span>
+            <span class="dropzone__hint">
+              Mehrere Dateien oder ganze Ordner – auch sehr große. Oder klicke, um sie auszuwählen.
+            </span>
+            <span class="row u-gap-2">
+              <span class="btn btn--sm btn--quiet">Dateien wählen</span>
+              <span class="btn btn--sm btn--quiet" id="btn-folder" data-folder-button>Ordner wählen</span>
+            </span>
+            <input
+              class="dropzone__input"
+              type="file"
+              id="file-input"
+              multiple
+              aria-hidden="true"
+              tabindex="-1"
+            />
+            <input
+              class="dropzone__input"
+              type="file"
+              id="folder-input"
+              webkitdirectory
+              directory
+              multiple
+              aria-hidden="true"
+              tabindex="-1"
+            />
+          </div>
+
+          <div id="selection" class="stack hidden">
+            <div class="row row--between">
+              <strong id="selection-summary">0 Dateien</strong>
+              <button type="button" class="btn btn--sm btn--quiet" id="btn-clear">Liste leeren</button>
+            </div>
+            <div class="filelist" id="filelist" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="card card--pad stack" id="options-card">
+          <label class="field">
+            <span class="field__label">Nachricht an die Empfänger (wird mitverschlüsselt)</span>
+            <textarea
+              class="textarea"
+              id="message"
+              maxlength="2000"
+              placeholder="Hier ist das Material vom Shooting – sag Bescheid, wenn etwas fehlt."
+            ></textarea>
+          </label>
+
+          <div class="grid grid--2">
+            <label class="field">
+              <span class="field__label">Link läuft ab nach</span>
+              <select class="select" id="expiry"></select>
+            </label>
+            <label class="field">
+              <span class="field__label">Maximale Downloads</span>
+              <select class="select" id="max-downloads"></select>
+            </label>
+          </div>
+
+          <div class="stack stack--sm">
+            <label class="switch">
+              <input type="checkbox" id="use-password" />
+              <span>Mit Passwort schützen</span>
+            </label>
+            <div id="password-wrap" class="stack stack--sm hidden">
+              <div class="field--with-action">
+                <input
+                  class="input"
+                  type="password"
+                  id="password"
+                  autocomplete="new-password"
+                  placeholder="Passwort (mindestens 8 Zeichen)"
+                  minlength="8"
+                />
+                <button type="button" class="btn btn--quiet" id="btn-reveal" aria-label="Passwort anzeigen">Zeigen</button>
+              </div>
+              <p class="field__hint">
+                Das Passwort schützt zusätzlich den Schlüssel. Empfänger brauchen Link <em>und</em> Passwort.
+                Bitte getrennt übermitteln.
+              </p>
+            </div>
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" id="notify" checked />
+            <span>Mich benachrichtigen, wenn heruntergeladen wird</span>
+          </label>
+
+          <div class="row row--between row--wrap u-gap-3">
+            <span class="lock-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="2.5" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              AES-256-GCM, Schlüssel nur im Link
+            </span>
+            <span class="tiny muted" id="size-hint"></span>
+          </div>
+
+          <button type="button" class="btn btn--primary btn--lg btn--full" id="btn-upload" disabled>
+            Verschlüsselt hochladen
+          </button>
+          <p class="tiny muted center" id="crypto-warning"></p>
+        </div>
+      </section>
+
+      <!-- ================= Ansicht: Upload läuft ================= -->
+      <section id="view-progress" class="card card--pad stack hidden">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title" id="progress-title">Wird verschlüsselt und hochgeladen …</h2>
+            <p class="card__sub" id="progress-sub">Bitte dieses Fenster geöffnet lassen.</p>
+          </div>
+          <span class="state-badge" id="progress-state">läuft</span>
+        </div>
+
+        <div class="ring" id="ring">
+          <span class="ring__label" id="ring-label">0 %</span>
+        </div>
+
+        <dl class="summary">
+          <div class="summary__row"><dt>Übertragen</dt><dd id="p-transferred">0 B</dd></div>
+          <div class="summary__row"><dt>Geschwindigkeit</dt><dd id="p-speed">–</dd></div>
+          <div class="summary__row"><dt>Verbleibend</dt><dd id="p-eta">–</dd></div>
+        </dl>
+
+        <div class="filelist" id="progress-files"></div>
+
+        <div class="row u-gap-2">
+          <button type="button" class="btn btn--quiet" id="btn-pause">Pause</button>
+          <button type="button" class="btn btn--danger btn--quiet" id="btn-abort">Abbrechen</button>
+        </div>
+      </section>
+
+      <!-- ================= Ansicht: Fertig ================= -->
+      <section id="view-done" class="card card--pad stack hidden">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 13l4.5 4.5L19 7" />
+            </svg>
+          </span>
+          <h2>Fertig – der Link ist bereit</h2>
+          <p class="muted" id="done-summary"></p>
+        </div>
+
+        <div class="linkbox">
+          <span class="linkbox__value" id="share-link"></span>
+          <button type="button" class="btn btn--primary" id="btn-copy">Kopieren</button>
+        </div>
+
+        <p class="notice notice--warn">
+          Dieser Link <strong>ist</strong> der Schlüssel. Wer ihn hat, kann die Dateien lesen –
+          teile ihn also nur mit den gewünschten Personen. Wird er verloren, sind die Daten nicht mehr lesbar.
+        </p>
+
+        <div class="row row--wrap u-gap-2">
+          <button type="button" class="btn btn--quiet" id="btn-qr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <path d="M14 14h3v3h-3zM19 19h2v2h-2zM14 19h2v2h-2zM19 14h2v2h-2z" />
+            </svg>
+            QR-Code
+          </button>
+          <a class="btn btn--quiet" id="btn-mail" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2.5" />
+              <path d="M3.5 7l8.5 6 8.5-6" />
+            </svg>
+            Per E-Mail senden
+          </a>
+          <button type="button" class="btn btn--quiet hidden" id="btn-native-share">Teilen …</button>
+          <button type="button" class="btn btn--quiet" id="btn-new">Neuer Transfer</button>
+        </div>
+      </section>
+    </main>
+
+    <footer data-shell="footer"></footer>
+    <script type="module" src="/js/app-send.js"></script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "sharedrive",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Selbstgehosteter Dateitransfer mit Ende-zu-Ende-Verschluesselung, Reverse-Share und cozy Web-UI.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test",
+    "test:crypto": "node --test test/crypto.test.js",
+    "test:api": "node --test test/server.test.js"
+  },
+  "license": "MIT"
+}

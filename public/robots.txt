@@ -1,0 +1,3 @@
+# sharedrive - Transfer-Links gehoeren nicht in Suchmaschinen.
+User-agent: *
+Disallow: /

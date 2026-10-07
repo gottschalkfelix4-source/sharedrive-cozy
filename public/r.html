@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="de" data-theme="sunset">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Dateien hochladen – sharedrive</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/sr-theme-boot.js"></script>
+  </head>
+  <body>
+    <div class="bg-blobs" aria-hidden="true">
+      <span class="blob blob--1"></span>
+      <span class="blob blob--2"></span>
+      <span class="blob blob--3"></span>
+    </div>
+
+    <header data-shell="header"></header>
+
+    <main class="shell shell--narrow">
+      <section id="view-loading" class="card card--pad center stack">
+        <h2>Portal wird geladen …</h2>
+      </section>
+
+      <!-- Passwort fuer das Portal -->
+      <section id="view-password" class="card card--pad stack hidden">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="10" width="16" height="11" rx="2.5" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </span>
+          <h2>Dieses Portal ist geschützt</h2>
+          <p class="muted">Bitte gib das Passwort ein, das du vom Eigentümer bekommen hast.</p>
+        </div>
+        <div class="field--with-action">
+          <input class="input" type="password" id="pw-input" placeholder="Passwort" />
+          <button type="button" class="btn btn--primary" id="pw-submit">Weiter</button>
+        </div>
+        <p class="tiny muted center" id="pw-hint"></p>
+      </section>
+
+      <!-- Upload -->
+      <section id="view-compose" class="stack hidden">
+        <div class="card card--pad stack">
+          <div class="card__head">
+            <div>
+              <h2 class="card__title" id="request-title"></h2>
+              <p class="card__sub" id="request-meta"></p>
+            </div>
+            <span class="lock-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="2.5" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              nur der Eigentümer kann lesen
+            </span>
+          </div>
+
+          <p id="request-message" class="notice notice--info hidden u-pre-wrap"></p>
+
+          <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Dateien auswählen oder hierher ziehen">
+            <span class="dropzone__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 16V4" /><path d="M7 9l5-5 5 5" /><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+              </svg>
+            </span>
+            <span class="dropzone__title">Dateien hierher ziehen</span>
+            <span class="dropzone__hint">Mehrere Dateien oder ganze Ordner. Sie werden sofort in deinem Browser verschlüsselt.</span>
+            <span class="row u-gap-2">
+              <span class="btn btn--sm btn--quiet">Dateien wählen</span>
+              <span class="btn btn--sm btn--quiet" id="btn-folder" data-folder-button>Ordner wählen</span>
+            </span>
+            <input class="dropzone__input" type="file" id="file-input" multiple tabindex="-1" aria-hidden="true" />
+            <input class="dropzone__input" type="file" id="folder-input" webkitdirectory directory multiple tabindex="-1" aria-hidden="true" />
+          </div>
+
+          <div id="selection" class="stack hidden">
+            <div class="row row--between">
+              <strong id="selection-summary"></strong>
+              <button type="button" class="btn btn--sm btn--quiet" id="btn-clear">Liste leeren</button>
+            </div>
+            <div class="filelist" id="filelist"></div>
+          </div>
+
+          <label class="field">
+            <span class="field__label">Nachricht an den Eigentümer (wird mitverschlüsselt)</span>
+            <textarea class="textarea" id="message" maxlength="2000" placeholder="Das sind die Fotos von Samstag."></textarea>
+          </label>
+
+          <button type="button" class="btn btn--primary btn--lg btn--full" id="btn-upload" disabled>
+            Verschlüsselt hochladen
+          </button>
+          <p class="tiny muted center" id="crypto-warning"></p>
+        </div>
+      </section>
+
+      <!-- Upload laeuft -->
+      <section id="view-progress" class="card card--pad stack hidden">
+        <div class="card__head">
+          <div>
+            <h2 class="card__title">Wird verschlüsselt und hochgeladen …</h2>
+            <p class="card__sub">Bitte dieses Fenster geöffnet lassen.</p>
+          </div>
+          <span class="state-badge" id="progress-state">läuft</span>
+        </div>
+        <div class="ring" id="ring"><span class="ring__label" id="ring-label">0 %</span></div>
+        <dl class="summary">
+          <div class="summary__row"><dt>Übertragen</dt><dd id="p-transferred">0 B</dd></div>
+          <div class="summary__row"><dt>Geschwindigkeit</dt><dd id="p-speed">–</dd></div>
+          <div class="summary__row"><dt>Verbleibend</dt><dd id="p-eta">–</dd></div>
+        </dl>
+        <div class="filelist" id="progress-files"></div>
+        <div class="row u-gap-2">
+          <button type="button" class="btn btn--quiet" id="btn-pause">Pause</button>
+          <button type="button" class="btn btn--danger btn--quiet" id="btn-abort">Abbrechen</button>
+        </div>
+      </section>
+
+      <!-- Fertig -->
+      <section id="view-done" class="card card--pad stack hidden">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4.5 4.5L19 7" /></svg>
+          </span>
+          <h2>Danke! Deine Dateien sind angekommen.</h2>
+          <p class="muted" id="done-summary"></p>
+        </div>
+        <button type="button" class="btn btn--quiet btn--full" id="btn-again">Noch mehr Dateien schicken</button>
+      </section>
+
+      <!-- Nicht moeglich -->
+      <section id="view-blocked" class="card card--pad stack hidden">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self u-icon-muted">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5M12 16.2v.3" /></svg>
+          </span>
+          <h2 id="blocked-title">Nicht verfügbar</h2>
+          <p class="muted" id="blocked-text"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer data-shell="footer"></footer>
+    <script type="module" src="/js/app-request.js"></script>
+  </body>
+</html>

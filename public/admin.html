@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="de" data-theme="sunset">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Verwaltung – sharedrive</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/sr-theme-boot.js"></script>
+    <script src="/vendor/qrcode.js"></script>
+    <script src="/vendor/qrcode-utf8.js"></script>
+  </head>
+  <body>
+    <div class="bg-blobs" aria-hidden="true">
+      <span class="blob blob--1"></span>
+      <span class="blob blob--2"></span>
+      <span class="blob blob--3"></span>
+    </div>
+
+    <header data-shell="header"></header>
+
+    <main class="shell shell--wide">
+      <!-- Anmeldung -->
+      <section id="view-login" class="card card--pad stack shell--narrow hidden u-center-self">
+        <div class="center stack stack--sm">
+          <span class="dropzone__icon u-center-self">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="10" width="16" height="11" rx="2.5" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </span>
+          <h1>Verwaltung</h1>
+          <p class="muted">Bitte das Admin-Passwort eingeben.</p>
+        </div>
+        <div class="field--with-action">
+          <input class="input" type="password" id="login-password" autocomplete="current-password" placeholder="Passwort" />
+          <button type="button" class="btn btn--primary" id="login-submit">Anmelden</button>
+        </div>
+        <p class="tiny muted center" id="login-hint"></p>
+      </section>
+
+      <!-- Dashboard -->
+      <section id="view-dashboard" class="stack hidden">
+        <div class="row row--between row--wrap">
+          <div>
+            <h1 id="instance-title">sharedrive</h1>
+            <p class="muted" id="instance-sub"></p>
+          </div>
+          <button type="button" class="btn btn--quiet" id="btn-logout">Abmelden</button>
+        </div>
+
+        <div class="grid grid--stats" id="stat-cards"></div>
+
+        <div class="card card--pad">
+          <div class="card__head">
+            <div>
+              <h3 class="card__title">Downloads der letzten 14 Tage</h3>
+              <p class="card__sub" id="chart-sub">Ein Download zählt einmal pro Empfänger.</p>
+            </div>
+          </div>
+          <div class="sparkline" id="chart"></div>
+          <div class="u-chart-note-space"></div>
+        </div>
+
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab is-active" data-tab="transfers" role="tab">Transfers</button>
+          <button type="button" class="tab" data-tab="portals" role="tab">Upload-Portale</button>
+          <button type="button" class="tab" data-tab="activity" role="tab">Aktivität</button>
+          <button type="button" class="tab" data-tab="branding" role="tab">Erscheinungsbild</button>
+          <button type="button" class="tab" data-tab="maintenance" role="tab">Wartung</button>
+        </div>
+
+        <!-- Transfers -->
+        <div class="card card--pad stack" data-panel="transfers">
+          <div class="card__head">
+            <div>
+              <h3 class="card__title">Alle Transfers</h3>
+              <p class="card__sub">
+                Dateinamen und Nachrichten sind verschlüsselt – der Server kann sie nicht lesen. Hier stehen
+                nur Größe, Anzahl der Dateien, Ablauf und Zugriffe.
+              </p>
+            </div>
+            <div class="field--with-action u-maxw-320">
+              <input class="input" type="search" id="transfer-search" placeholder="Suchen (ID oder Notiz)" />
+              <button type="button" class="btn btn--quiet" id="btn-refresh">Neu laden</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Transfer</th>
+                  <th>Größe</th>
+                  <th>Dateien</th>
+                  <th>Downloads</th>
+                  <th>Ablauf</th>
+                  <th>Status</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="transfer-rows"></tbody>
+            </table>
+          </div>
+          <div class="row row--between">
+            <button type="button" class="btn btn--sm btn--quiet" id="page-prev">Zurück</button>
+            <span class="tiny muted" id="page-label"></span>
+            <button type="button" class="btn btn--sm btn--quiet" id="page-next">Weiter</button>
+          </div>
+        </div>
+
+        <!-- Portale -->
+        <div class="card card--pad stack hidden" data-panel="portals">
+          <div class="card__head">
+            <div>
+              <h3 class="card__title">Upload-Portale</h3>
+              <p class="card__sub">
+                Ein Link, über den andere dir Dateien schicken können. Jeder Upload wird nur für dich
+                verschlüsselt – auch andere Uploader können nicht mitlesen.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid--2">
+            <label class="field">
+              <span class="field__label">Titel</span>
+              <input class="input" id="req-title" placeholder="Fotos vom Wochenende" maxlength="120" />
+            </label>
+            <label class="field">
+              <span class="field__label">Ablauf</span>
+              <select class="select" id="req-expiry"></select>
+            </label>
+          </div>
+          <div class="grid grid--2">
+            <label class="field">
+              <span class="field__label">Nachricht an die Uploader</span>
+              <textarea class="textarea" id="req-message" maxlength="1000" placeholder="Schick mir bitte die unbearbeiteten Bilder."></textarea>
+            </label>
+            <div class="stack">
+              <label class="field">
+                <span class="field__label">Maximal große Datei pro Upload</span>
+                <select class="select" id="req-size"></select>
+              </label>
+              <label class="field">
+                <span class="field__label">Passwort für das Portal (optional)</span>
+                <input class="input" type="text" id="req-password" placeholder="leer lassen für offenes Portal" />
+              </label>
+            </div>
+          </div>
+          <div class="row row--wrap u-gap-3">
+            <label class="switch">
+              <input type="checkbox" id="req-notify" checked />
+              <span>Bei neuen Uploads benachrichtigen</span>
+            </label>
+          </div>
+
+          <div class="notice notice--warn">
+            Der private Schlüssel des Portals bleibt ausschließlich in diesem Browser. Geht er verloren,
+            sind eingegangene Uploads nicht mehr lesbar – deshalb erscheint nach dem Anlegen sofort die
+            Möglichkeit, ihn zu sichern.
+          </div>
+
+          <button type="button" class="btn btn--primary" id="btn-create-request">Portal anlegen</button>
+
+          <h3 class="card__title u-mt-4">Vorhandene Portale</h3>
+          <div class="stack" id="portal-list"></div>
+        </div>
+
+        <!-- Aktivität -->
+        <div class="card card--pad stack hidden" data-panel="activity">
+          <div class="card__head">
+            <div>
+              <h3 class="card__title">Letzte Zugriffe</h3>
+              <p class="card__sub" id="activity-sub"></p>
+            </div>
+            <button type="button" class="btn btn--sm btn--quiet" id="btn-refresh-activity">Neu laden</button>
+          </div>
+          <div class="stack stack--sm" id="activity-list"></div>
+        </div>
+
+        <!-- Erscheinungsbild -->
+        <div class="card card--pad stack hidden" data-panel="branding">
+          <div class="card__head">
+            <div>
+              <h3 class="card__title">Erscheinungsbild</h3>
+              <p class="card__sub">Name, Untertitel und Farbwelt der Oberfläche.</p>
+            </div>
+          </div>
+          <div class="grid grid--2">
+            <label class="field">
+              <span class="field__label">Name</span>
+              <input class="input" id="brand-name" maxlength="60" />
+            </label>
+            <label class="field">
+              <span class="field__label">Untertitel</span>
+              <input class="input" id="brand-tagline" maxlength="160" />
+            </label>
+            <label class="field">
+              <span class="field__label">Farbwelt</span>
+              <select class="select" id="brand-theme">
+                <option value="sunset">Sonnenuntergang</option>
+                <option value="mint">Minze</option>
+                <option value="lavender">Lavendel</option>
+                <option value="ocean">Ozean</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">Logo-Adresse (optional)</span>
+              <input class="input" id="brand-logo" placeholder="https://…" />
+            </label>
+          </div>
+          <div class="row">
+            <button type="button" class="btn btn--primary" id="btn-save-branding">Speichern</button>
+            <span class="tiny muted" id="brand-hint"></span>
+          </div>
+        </div>
+
+        <!-- Wartung -->
+        <div class="card card--pad stack hidden" data-panel="maintenance">
+          <div class="card__head">
+            <div>
+              <h3 class="card__title">Wartung und Übersicht</h3>
+              <p class="card__sub">Aufräumen, Benachrichtigungen testen und die aktuelle Konfiguration prüfen.</p>
+            </div>
+          </div>
+
+          <div class="row row--wrap u-gap-2">
+            <button type="button" class="btn btn--quiet" id="btn-cleanup">Abgelaufene Transfers aufräumen</button>
+            <button type="button" class="btn btn--quiet" id="btn-notify-test">Benachrichtigung testen</button>
+          </div>
+          <div class="notice hidden" id="maintenance-result"></div>
+
+          <h3 class="card__title">Konfiguration</h3>
+          <dl class="summary" id="config-list"></dl>
+        </div>
+      </section>
+    </main>
+
+    <footer data-shell="footer"></footer>
+    <script type="module" src="/js/app-admin.js"></script>
+  </body>
+</html>

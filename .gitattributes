@@ -1,0 +1,14 @@
+# Einheitliche Zeilenenden im gesamten Repository.
+#
+# Wichtig: Die Dockerfile benutzt Zeilenfortsetzungen mit "\" am Zeilenende.
+# Mit Windows-Zeilenenden (CRLF) wird daraus ein "\r", und Docker scheitert beim
+# Bauen. Deshalb sind hier feste LF-Zeilenenden fuer alle Textdateien gesetzt -
+# unabhaengig davon, auf welchem System geklont oder gebaut wird.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.woff2 binary
+*.sqlite binary

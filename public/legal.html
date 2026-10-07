@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de" data-theme="sunset">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rechtliches und Datenschutz – sharedrive</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/sr-theme-boot.js"></script>
+  </head>
+  <body>
+    <div class="bg-blobs" aria-hidden="true">
+      <span class="blob blob--1"></span>
+      <span class="blob blob--2"></span>
+      <span class="blob blob--3"></span>
+    </div>
+
+    <header data-shell="header"></header>
+
+    <main class="shell shell--narrow stack">
+      <section class="card card--pad stack">
+        <h1>Rechtliches</h1>
+        <p class="notice notice--warn">
+          Dies ist eine selbst betriebene Instanz. Die folgenden Angaben muss der Betreiber
+          ergänzen – insbesondere Impressum und Verantwortlicher nach DSGVO.
+        </p>
+
+        <h2>Impressum</h2>
+        <p class="muted">
+          Betreiber dieser Instanz: <em>bitte ergänzen</em><br />
+          Anschrift: <em>bitte ergänzen</em><br />
+          Kontakt: <em>bitte ergänzen</em>
+        </p>
+
+        <h2 id="datenschutz">Datenschutz</h2>
+        <p>
+          Diese Instanz ist so gebaut, dass möglichst wenige Daten anfallen. Was gespeichert wird und
+          was nicht, ist im Folgenden aufgeführt.
+        </p>
+
+        <h3>Was der Server nicht sehen kann</h3>
+        <ul>
+          <li><strong>Dateiinhalte</strong> – sie werden im Browser mit AES-256-GCM verschlüsselt.</li>
+          <li><strong>Dateinamen, Dateitypen und Ordnernamen</strong> – sie liegen verschlüsselt in den Metadaten.</li>
+          <li><strong>Nachrichten</strong> an die Empfänger – ebenfalls Teil der verschlüsselten Metadaten.</li>
+          <li>
+            <strong>Der Schlüssel</strong> – er steckt im Teil des Links nach dem „#“. Dieser Teil wird
+            von Browsern nie an einen Server übertragen.
+          </li>
+          <li>
+            <strong>Passwörter</strong> – sie werden nur im Browser ausgewertet, um den Schlüssel zu
+            entpacken. Auf dem Server liegt höchstens der damit verschlüsselte Schlüssel.
+          </li>
+        </ul>
+
+        <h3>Was gespeichert wird</h3>
+        <ul>
+          <li>die verschlüsselten Daten selbst, bis der Transfer abläuft oder gelöscht wird,</li>
+          <li>Zeitpunkt der Erstellung, Ablaufzeit und die Anzahl erlaubter Downloads,</li>
+          <li>Größe und Anzahl der Dateien sowie die Anzahl der Chunks,</li>
+          <li>
+            Zugriffe in Form von Zeitstempel, grobem Client-Kennzeichen und einer
+            <strong>Prüfsumme</strong> der IP-Adresse (nicht die Adresse selbst). Diese Einträge werden
+            nach der eingestellten Frist automatisch gelöscht.
+          </li>
+        </ul>
+
+        <h3>Keine Weitergabe</h3>
+        <p>
+          Es werden keine Analyse- oder Werbedienste eingebunden, keine externen Schriften geladen und
+          keine Daten an Dritte übermittelt. Benachrichtigungen gehen – falls eingerichtet – an den
+          Betreiber dieser Instanz.
+        </p>
+
+        <h3>Löschung</h3>
+        <p>
+          Transfers werden beim Ablauf oder nach dem Löschen unwiderruflich entfernt: die
+          verschlüsselten Daten, die Dateien auf dem Datenträger und die zugehörigen Protokolleinträge.
+        </p>
+
+        <h3>Datensicherung</h3>
+        <p>
+          Wer den Link kennt, kann die Dateien lesen. Wer ihn verliert, kann sie nicht
+          wiederherstellen – es gibt bewusst keine Hintertür und keine Kopie des Schlüssels.
+        </p>
+      </section>
+    </main>
+
+    <footer data-shell="footer"></footer>
+    <script type="module" src="/js/app-legal.js"></script>
+  </body>
+</html>

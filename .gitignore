@@ -1,0 +1,10 @@
+data/
+node_modules/
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db
+
+# Interne Dateien des Editor-Werkzeugs
+.freebuff/
