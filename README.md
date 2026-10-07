@@ -138,8 +138,10 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/my-sharedrive-cozy.x
   https://raw.githubusercontent.com/gottschalkfelix4-source/sharedrive-cozy/main/unraid-template.xml
 ```
 
-Danach in der WebGUI: **Docker → Add Container**, im Auswahlfeld *Template*
-**sharedrive** wählen. Alle Felder sind vorbereitet:
+Danach in der WebGUI: **Docker → Add Container**, im Auswahlfeld *Template* unter
+**User templates** den Eintrag **sharedrive-cozy** wählen. (Unraid beschriftet die
+Einträge mit dem Dateinamen ohne `my-` und `.xml` – deshalb taucht dort
+nicht der Dateiname `my-sharedrive-cozy` auf.) Alle Felder sind vorbereitet:
 
 | Feld | Was eintragen |
 |---|---|
@@ -158,7 +160,7 @@ Wer nicht auf die WebGUI warten will – Achtung, so angelegte Container verwalt
 Unraid nicht mit (kein Autostart nach Neustart):
 
 ```bash
-docker run -d --name sharedrive-cozy --restart unless-stopped -p 3000:3000 \
+docker run -d --name sharedrive-cozy --restart unless-stopped -p 3080:3000 \
   -v /mnt/user/appdata/sharedrive-cozy:/data \
   -e ADMIN_PASSWORD='dein-passwort' \
   -e INSTANCE_NAME='sharedrive' \
@@ -167,8 +169,14 @@ docker run -d --name sharedrive-cozy --restart unless-stopped -p 3000:3000 \
 
 ### Selbst bauen statt ziehen
 
+Das [`docker-compose.yml`](docker-compose.yml) im Projekt baut das Abbild selbst.
+Es verwendet bewusst den Container-Namen `sharedrive-cozy` und Host-Port **3080**,
+damit eine andere Instanz auf Port 3000 unberührt bleibt:
+
 ```bash
-cd /mnt/user/appdata/sharedrive
+git clone https://github.com/gottschalkfelix4-source/sharedrive-cozy.git
+cd sharedrive-cozy
+# ADMIN_PASSWORD in docker-compose.yml eintragen!
 docker compose up -d --build
 ```
 
@@ -179,10 +187,10 @@ auf Unraid ist Cloudflare Tunnel oder SWAG/nginx-proxy-manager üblich. Dabei:
 - `PUBLIC_URL` auf die öffentliche Adresse setzen, z. B. `https://share.example.com`
 - `TRUST_PROXY=1` setzen
 
-**Innerhalb des LAN** funktioniert `http://192.168.x.x:3000` bewusst nicht für
+**Innerhalb des LAN** funktioniert `http://192.168.x.x:3080` bewusst nicht für
 die Verschlüsselung (siehe nächster Abschnitt). Zwei Wege:
 - die Instanz ebenfalls über den Reverse Proxy mit gültigem Zertifikat erreichen, oder
-- direktes TLS im Container aktivieren: Zertifikat nach `/mnt/user/appdata/sharedrive/certs`
+- direktes TLS im Container aktivieren: Zertifikat nach `/mnt/user/appdata/sharedrive-cozy/certs`
   legen, diesen Ordner als Pfad einbinden und `TLS_CERT`/`TLS_KEY` darauf zeigen lassen.
 
 Die Vorlage selbst liegt im Projekt als [`unraid-template.xml`](unraid-template.xml).
@@ -193,7 +201,7 @@ Die Vorlage selbst liegt im Projekt als [`unraid-template.xml`](unraid-template.
 
 Browser stellen die Verschlüsselungs-API (`crypto.subtle`) **nur in sicheren
 Kontexten** bereit: `https://`, `localhost` und `127.0.0.1`. Über eine nackte
-LAN-IP wie `http://192.168.188.129:3000` gibt es sie nicht – und ohne sie kann
+LAN-IP wie `http://192.168.188.129:3080` gibt es sie nicht – und ohne sie kann
 sharedrive nicht arbeiten.
 
 Die Oberfläche prüft das und sagt es deutlich, statt stillschweigend unverschlüsselt

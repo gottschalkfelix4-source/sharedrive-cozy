@@ -1,16 +1,21 @@
+# Eigener Container-, Image- und Host-Port-Name, damit dieser Dienst nicht mit
+# einer bereits laufenden sharedrive-Instanz kollidiert (Container-Name
+# 'sharedrive' auf Host-Port 3000). Container-intern bleibt es Port 3000.
 services:
-  sharedrive:
+  sharedrive-cozy:
     build: .
-    image: sharedrive:latest
-    container_name: sharedrive
+    image: sharedrive-cozy:latest
+    container_name: sharedrive-cozy
     restart: unless-stopped
     ports:
       # Nur im eigenen Netz erreichbar. Fuer Zugriff von aussen entweder einen
       # Reverse Proxy davorsetzen oder TLS_CERT/TLS_KEY unten aktivieren.
-      - "3000:3000"
+      - "3080:3000"
     environment:
-      # Pflicht: Passwort fuer /admin
-      ADMIN_PASSWORD: "bitte-aendern"
+      # Pflicht: Passwort fuer /admin. Bewusst leer vorbelegt - ohne Passwort
+      # verweigert der Server das Dashboard statt ein bekanntes Standardpasswort
+      # zu erlauben. Vor dem ersten Start eintragen.
+      ADMIN_PASSWORD: ""
       INSTANCE_NAME: "sharedrive"
 
       # Oeffentliche Adresse, damit Links und QR-Codes stimmen
