@@ -143,8 +143,8 @@ Danach in der WebGUI: **Docker → Add Container**, im Auswahlfeld *Template*
 
 | Feld | Was eintragen |
 |---|---|
-| Weboberfläche | Port, Standard `3000` |
-| Datenordner | `/mnt/user/appdata/sharedrive` – am besten auf SSD oder Cache-Pool |
+| Weboberfläche | Host-Port, Standard **3080** (intern bleibt es 3000) |
+| Datenordner | `/mnt/user/appdata/sharedrive-cozy` – am besten auf SSD oder Cache-Pool |
 | **Admin-Passwort** | **Pflicht.** Bleibt es leer, verweigert der Server das Dashboard |
 | Öffentliche Adresse | z. B. `https://share.example.com` (für korrekte Links und QR-Codes) |
 | Hinter Reverse Proxy | `1`, sobald ein Proxy davorsteht |

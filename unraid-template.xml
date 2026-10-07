@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Container version="2">
-  <Name>sharedrive</Name>
+  <!-- Eigener Containername, damit dieser Container nicht mit einer bereits
+       laufenden sharedrive-Instanz kollidiert. -->
+  <Name>sharedrive-cozy</Name>
   <Repository>ghcr.io/gottschalkfelix4-source/sharedrive-cozy:latest</Repository>
   <Registry>https://github.com/gottschalkfelix4-source/sharedrive-cozy/pkgs/container/sharedrive-cozy</Registry>
   <Network>bridge</Network>
@@ -32,11 +34,13 @@
   <DonateText/>
   <DonateLink/>
 
-  <Config Name="Weboberfläche" Target="3000" Default="3000" Mode="tcp"
-    Description="Port der Weboberfläche. Über den Reverse Proxy (z. B. SWAG oder Nginx Proxy Manager) mit HTTPS veröffentlichen." Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+  <!-- Host-Port 3080, damit es keine Kollision mit einer vorhandenen Instanz
+       auf Port 3000 gibt. Beliebig aenderbar. -->
+  <Config Name="Weboberfläche" Target="3000" Default="3080" Mode="tcp"
+    Description="Host-Port, unter dem die Oberflaeche erreichbar ist (Container-intern bleibt es 3000). Ueber den Reverse Proxy mit HTTPS veroeffentlichen." Type="Port" Display="always" Required="true" Mask="false">3080</Config>
 
-  <Config Name="Datenordner" Target="/data" Default="/mnt/user/appdata/sharedrive"
-    Description="Hier liegen die verschluesselten Chunks und die Datenbank. Auf eine SSD oder einen Cache-Pool legen." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sharedrive</Config>
+  <Config Name="Datenordner" Target="/data" Default="/mnt/user/appdata/sharedrive-cozy"
+    Description="Hier liegen die verschluesselten Chunks und die Datenbank. Bewusst ein eigener Ordner, damit eine andere sharedrive-Instanz unberuehrt bleibt. Am besten auf SSD oder Cache-Pool." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sharedrive-cozy</Config>
 
   <Config Name="Admin-Passwort" Target="ADMIN_PASSWORD" Default=""
     Description="Pflicht. Passwort für /admin. Bewusst ohne Vorbelegung: bleibt das Feld leer, verweigert der Server das Dashboard - statt ein bekanntes Standardpasswort zu erlauben." Type="Variable" Display="always" Required="true" Mask="true"></Config>
