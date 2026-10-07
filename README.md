@@ -7,6 +7,11 @@ auf Unraid als Docker-Container, hinter einem Reverse Proxy oder direkt mit TLS.
 Der Kern in einem Satz: **Dateien werden im Browser verschlüsselt, der Schlüssel steht
 nur im Link, und der Server sieht ihn nie.**
 
+Diese Fassung ist bewusst eigenständig und schlank: **ein einziger Container**, SQLite
+statt Datenbank- und Objektspeicher-Diensten, keine npm-Abhängigkeiten. Statt einer
+optionalen Verschlüsselung ist hier **jeder** Transfer Ende-zu-Ende-verschlüsselt —
+wer den Schlüssel nicht hat, kann auch als Betreiber nicht mitlesen.
+
 ---
 
 ## Inhalt
@@ -111,8 +116,8 @@ ziehen. Im **Webterminal** des Servers (oder per SSH) eine Zeile ausführen:
 
 ```bash
 mkdir -p /boot/config/plugins/dockerMan/templates-user && \
-curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/my-sharedrive.xml \
-  https://raw.githubusercontent.com/gottschalkfelix4-source/sharedrive/main/unraid-template.xml
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/my-sharedrive-cozy.xml \
+  https://raw.githubusercontent.com/gottschalkfelix4-source/sharedrive-cozy/main/unraid-template.xml
 ```
 
 Danach in der WebGUI: **Docker → Add Container**, im Auswahlfeld *Template*
@@ -135,11 +140,11 @@ Wer nicht auf die WebGUI warten will – Achtung, so angelegte Container verwalt
 Unraid nicht mit (kein Autostart nach Neustart):
 
 ```bash
-docker run -d --name sharedrive --restart unless-stopped -p 3000:3000 \
-  -v /mnt/user/appdata/sharedrive:/data \
+docker run -d --name sharedrive-cozy --restart unless-stopped -p 3000:3000 \
+  -v /mnt/user/appdata/sharedrive-cozy:/data \
   -e ADMIN_PASSWORD='dein-passwort' \
   -e INSTANCE_NAME='sharedrive' \
-  ghcr.io/gottschalkfelix4-source/sharedrive:latest
+  ghcr.io/gottschalkfelix4-source/sharedrive-cozy:latest
 ```
 
 ### Selbst bauen statt ziehen

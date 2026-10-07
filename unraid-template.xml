@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>sharedrive</Name>
-  <Repository>ghcr.io/gottschalkfelix4-source/sharedrive:latest</Repository>
-  <Registry>https://github.com/gottschalkfelix4-source/sharedrive/pkgs/container/sharedrive</Registry>
+  <Repository>ghcr.io/gottschalkfelix4-source/sharedrive-cozy:latest</Repository>
+  <Registry>https://github.com/gottschalkfelix4-source/sharedrive-cozy/pkgs/container/sharedrive-cozy</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/gottschalkfelix4-source/sharedrive/issues</Support>
-  <Project>https://github.com/gottschalkfelix4-source/sharedrive</Project>
+  <Support>https://github.com/gottschalkfelix4-source/sharedrive-cozy/issues</Support>
+  <Project>https://github.com/gottschalkfelix4-source/sharedrive-cozy</Project>
   <Overview>
     Selbstgehosteter Dateitransfer mit echter Ende-zu-Ende-Verschluesselung.
     Dateien werden im Browser verschluesselt (AES-256-GCM); der Schluessel steckt
@@ -24,7 +24,7 @@
   <Category>Cloud: Tools: Security:</Category>
   <WebUI>http://[IP]:[PORT:3000]/</WebUI>
   <TemplateURL/>
-  <Icon>https://raw.githubusercontent.com/gottschalkfelix4-source/sharedrive/main/public/favicon.svg</Icon>
+  <Icon>https://raw.githubusercontent.com/gottschalkfelix4-source/sharedrive-cozy/main/public/favicon.svg</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
